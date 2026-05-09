@@ -3,7 +3,7 @@ import pandas as pd
 from sklearn.ensemble import IsolationForest
 import datetime
 import logging
-
+import matplotlib.pyplot as plt
 class AegisX_Core:
     def __init__(self):
         # The 'Brain' - 200 estimators for high precision
@@ -40,6 +40,27 @@ class AegisX_Core:
             # Persistent Logging
             logging.warning(f"[THREAT] Entropy Deviation: {threat[2]:.2f} | Latency: {threat[0]:.2f} | Pkt Size: {threat[1]:.2f}")
             logging.info(f"[HEAL] Generated Virtual Firewall Rule: DROP PKT FROM SRC_SIG_{threat_sig}")
+    def visualize_traffic(self, data, predictions):
+        """Generates a 3D scatter plot of the traffic anomalies"""
+        fig = plt.figure(figsize=(10, 7))
+        ax = fig.add_subplot(111, projection='3d')
+        
+        # Normal traffic
+        normal_data = data[predictions == 1]
+        ax.scatter(normal_data[:, 0], normal_data[:, 1], normal_data[:, 2], c='blue', label='Normal Traffic', alpha=0.5)
+        
+        # Threat traffic
+        threat_data = data[predictions == -1]
+        ax.scatter(threat_data[:, 0], threat_data[:, 1], threat_data[:, 2], c='red', label='Threat (Zero-Day)', s=100, marker='X')
+        
+        ax.set_xlabel('Latency (ms)')
+        ax.set_ylabel('Packet Size (Bytes)')
+        ax.set_zlabel('Entropy')
+        ax.set_title('Aegis-X: Mesh Traffic Anomaly Detection')
+        ax.legend()
+        
+        plt.savefig('traffic_analysis.png')
+        print("[VISUALIZATION] Traffic analysis plot saved as 'traffic_analysis.png'")
 
     def run_deployment(self):
         data = self.simulate_mesh_traffic()
@@ -50,6 +71,8 @@ class AegisX_Core:
         threats = data[predictions == -1]
         if len(threats) > 0:
             self.self_heal(threats)
+            
+        self.visualize_traffic(data, predictions)
         return len(threats)
 
 if __name__ == "__main__":
