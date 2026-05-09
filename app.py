@@ -14,5 +14,5 @@ def api_data():
     return jsonify(data)
 
 if __name__ == '__main__':
-    # Run the Flask app on port 5000
-    app.run(debug=True, host='0.0.0.0', port=5000)
+    # Run the Flask app on port 5050 to avoid conflicts
+    app.run(debug=True, host='0.0.0.0', port=5050)
