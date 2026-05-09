@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aegis-X: Neural Mesh Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <!-- Plotly.js -->
+    <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
+</head>
+<body>
+    <div class="app-container">
+        <header class="app-header">
+            <div class="logo">
+                <span class="logo-icon">⬡</span>
+                <h1>Aegis-X</h1>
+                <span class="badge">LIVE NEURAL MESH</span>
+            </div>
+            <div class="header-controls">
+                <div class="status-indicator">
+                    <span class="pulse"></span> System Online
+                </div>
+                <button id="refresh-btn" class="btn primary">Scan Mesh Now</button>
+            </div>
+        </header>
+
+        <main class="dashboard">
+            <div class="panel visualization-panel">
+                <div class="panel-header">
+                    <h2>Traffic Topology Analysis</h2>
+                    <p class="subtitle">3D Isolation Forest Feature Space</p>
+                </div>
+                <div id="mesh-plot" class="plot-container">
+                    <!-- Plotly will render here -->
+                    <div class="loading">Initializing Neural Scan...</div>
+                </div>
+            </div>
+
+            <div class="panel side-panel">
+                <div class="stats-cards">
+                    <div class="stat-card">
+                        <h3>Total Nodes Scanned</h3>
+                        <div class="stat-value" id="total-nodes">--</div>
+                    </div>
+                    <div class="stat-card alert">
+                        <h3>Threats Detected</h3>
+                        <div class="stat-value" id="threat-count">--</div>
+                    </div>
+                </div>
+
+                <div class="threat-log-container">
+                    <div class="panel-header">
+                        <h2>Active Threat Feed</h2>
+                        <p class="subtitle">Node Isolation Protocols</p>
+                    </div>
+                    <div class="threat-feed" id="threat-feed">
+                        <!-- Threat logs will be injected here -->
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+</html>
