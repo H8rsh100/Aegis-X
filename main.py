@@ -75,6 +75,35 @@ class AegisX_Core:
         self.visualize_traffic(data, predictions)
         return len(threats)
 
+    def get_api_data(self):
+        """Returns JSON-serializable dictionary for the web dashboard."""
+        data = self.simulate_mesh_traffic()
+        self.brain.fit(data)
+        predictions = self.brain.predict(data)
+        
+        threat_logs = []
+        threats = data[predictions == -1]
+        for threat in threats:
+            timestamp = datetime.datetime.now().strftime("%H:%M:%S")
+            threat_sig = hash(tuple(threat))
+            threat_logs.append({
+                "timestamp": timestamp,
+                "entropy": round(float(threat[2]), 2),
+                "latency": round(float(threat[0]), 2),
+                "packet_size": round(float(threat[1]), 2),
+                "signature": str(threat_sig),
+                "action": "DROP PKT"
+            })
+            # Keep persistent logging
+            logging.warning(f"[THREAT] Entropy Deviation: {threat[2]:.2f} | Latency: {threat[0]:.2f} | Pkt Size: {threat[1]:.2f}")
+            logging.info(f"[HEAL] Generated Virtual Firewall Rule: DROP PKT FROM SRC_SIG_{threat_sig}")
+            
+        return {
+            "traffic": data.tolist(),
+            "predictions": predictions.tolist(),
+            "threats": threat_logs
+        }
+
 if __name__ == "__main__":
     engine = AegisX_Core()
     engine.run_deployment()
