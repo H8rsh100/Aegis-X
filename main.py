@@ -2,12 +2,21 @@ import numpy as np
 import pandas as pd
 from sklearn.ensemble import IsolationForest
 import datetime
+import logging
 
 class AegisX_Core:
     def __init__(self):
         # The 'Brain' - 200 estimators for high precision
         self.brain = IsolationForest(n_estimators=200, contamination=0.02)
         self.is_trained = False
+        
+        # Setup logging
+        logging.basicConfig(
+            filename='aegis_threats.log',
+            level=logging.INFO,
+            format='%(asctime)s - %(message)s',
+            datefmt='%Y-%m-%d %H:%M:%S'
+        )
 
     def simulate_mesh_traffic(self):
         """Generates Encrypted IoT Mesh Traffic Patterns"""
@@ -21,9 +30,16 @@ class AegisX_Core:
         """The Response Logic - This is the 'Invention'"""
         for threat in threat_data:
             timestamp = datetime.datetime.now().strftime("%H:%M:%S")
+            threat_sig = hash(tuple(threat))
+            
+            # Console output
             print(f"[{timestamp}] [THREAT] Entropy Deviation Detected: {threat[2]:.2f}")
             print(f"[{timestamp}] [ACTION] Initiating Node Isolation Protocol...")
-            print(f"[{timestamp}] [HEAL] Virtual Firewall Rule Generated: DROP PKT FROM SRC_SIG_{hash(tuple(threat))}")
+            print(f"[{timestamp}] [HEAL] Virtual Firewall Rule Generated: DROP PKT FROM SRC_SIG_{threat_sig}")
+            
+            # Persistent Logging
+            logging.warning(f"[THREAT] Entropy Deviation: {threat[2]:.2f} | Latency: {threat[0]:.2f} | Pkt Size: {threat[1]:.2f}")
+            logging.info(f"[HEAL] Generated Virtual Firewall Rule: DROP PKT FROM SRC_SIG_{threat_sig}")
 
     def run_deployment(self):
         data = self.simulate_mesh_traffic()
