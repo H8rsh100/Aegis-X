@@ -3,74 +3,200 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Aegis-X: Neural Mesh Dashboard</title>
+    <title>Aegis-X — Neural Mesh Threat Detection</title>
+    <meta name="description" content="AI-powered zero-day attack detection for IoT mesh networks using Isolation Forest anomaly detection.">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
-    <!-- Plotly.js -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
 </head>
 <body>
-    <div class="app-container">
-        <header class="app-header">
-            <div class="logo">
-                <span class="logo-icon">⬡</span>
-                <h1>Aegis-X</h1>
-                <span class="badge">LIVE NEURAL MESH</span>
-            </div>
-            <div class="header-controls">
-                <div class="status-indicator">
-                    <span class="pulse"></span> System Online
-                </div>
-                <button id="refresh-btn" class="btn primary">Scan Mesh Now</button>
-            </div>
-        </header>
+    <!-- Ambient Background Effects -->
+    <div class="ambient-orb orb-1"></div>
+    <div class="ambient-orb orb-2"></div>
+    <div class="ambient-orb orb-3"></div>
+    <div class="scanline-overlay"></div>
 
-        <main class="dashboard">
-            <div class="panel visualization-panel">
-                <div class="panel-header">
-                    <h2>Traffic Topology Analysis</h2>
-                    <p class="subtitle">3D Isolation Forest Feature Space</p>
-                </div>
-                <div id="mesh-plot" class="plot-container">
-                    <!-- Plotly will render here -->
-                    <div class="loading">Initializing Neural Scan...</div>
+    <div class="app-shell">
+        <!-- Top Navigation Bar -->
+        <nav class="top-bar" id="top-bar">
+            <div class="top-bar__left">
+                <div class="logo-group">
+                    <div class="logo-hexagon">
+                        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.5">
+                            <path d="M12 2L21.5 7.5V16.5L12 22L2.5 16.5V7.5L12 2Z"/>
+                            <circle cx="12" cy="12" r="3" fill="currentColor" stroke="none"/>
+                        </svg>
+                    </div>
+                    <div class="logo-text">
+                        <h1>AEGIS-X</h1>
+                        <span class="logo-subtitle">NEURAL MESH DEFENSE</span>
+                    </div>
                 </div>
             </div>
+            <div class="top-bar__center">
+                <div class="status-chip online" id="status-chip">
+                    <span class="status-dot"></span>
+                    <span>ALL SYSTEMS OPERATIONAL</span>
+                </div>
+            </div>
+            <div class="top-bar__right">
+                <div class="uptime-display" id="uptime-display">
+                    <span class="uptime-label">UPTIME</span>
+                    <span class="uptime-value" id="system-uptime">00:00:00</span>
+                </div>
+                <button class="scan-btn" id="refresh-btn">
+                    <svg class="scan-btn__icon" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m0 0a9 9 0 019-9m-9 9a9 9 0 009 9"/>
+                    </svg>
+                    <span>SCAN MESH</span>
+                </button>
+            </div>
+        </nav>
 
-            <div class="panel side-panel">
-                <div class="stats-cards">
-                    <div class="stat-card">
-                        <h3>Total Nodes Scanned</h3>
-                        <div class="stat-value" id="total-nodes">--</div>
+        <!-- Main Content Grid -->
+        <main class="main-grid">
+            <!-- Left Column: Stats Row + 3D Viz -->
+            <div class="col-left">
+                <!-- KPI Stat Row -->
+                <div class="kpi-row">
+                    <div class="kpi-card" id="kpi-nodes">
+                        <div class="kpi-card__icon nodes-icon">
+                            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.5">
+                                <circle cx="12" cy="12" r="3"/><circle cx="4" cy="6" r="2"/><circle cx="20" cy="6" r="2"/>
+                                <circle cx="4" cy="18" r="2"/><circle cx="20" cy="18" r="2"/>
+                                <path d="M6 7l4 4M18 7l-4 4M6 17l4-4M18 17l-4-4"/>
+                            </svg>
+                        </div>
+                        <div class="kpi-card__data">
+                            <span class="kpi-value" id="total-nodes">—</span>
+                            <span class="kpi-label">Nodes Scanned</span>
+                        </div>
                     </div>
-                    <div class="stat-card alert">
-                        <h3>Threats Detected</h3>
-                        <div class="stat-value" id="threat-count">--</div>
+                    <div class="kpi-card threat" id="kpi-threats">
+                        <div class="kpi-card__icon threat-icon">
+                            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.5">
+                                <path d="M12 9v4M12 17h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/>
+                            </svg>
+                        </div>
+                        <div class="kpi-card__data">
+                            <span class="kpi-value threat-value" id="threat-count">—</span>
+                            <span class="kpi-label">Threats Detected</span>
+                        </div>
                     </div>
-                    <div class="stat-card">
-                        <h3>System Uptime</h3>
-                        <div class="stat-value mono" id="system-uptime">--:--:--</div>
+                    <div class="kpi-card" id="kpi-scans">
+                        <div class="kpi-card__icon scans-icon">
+                            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.5">
+                                <path d="M22 12h-4l-3 9L9 3l-3 9H2"/>
+                            </svg>
+                        </div>
+                        <div class="kpi-card__data">
+                            <span class="kpi-value" id="scan-count">—</span>
+                            <span class="kpi-label">Total Scans</span>
+                        </div>
                     </div>
-                    <div class="stat-card">
-                        <h3>Total Scans</h3>
-                        <div class="stat-value" id="scan-count">--</div>
+                    <div class="kpi-card severity-card" id="kpi-severity">
+                        <div class="severity-breakdown">
+                            <div class="sev-item critical">
+                                <span class="sev-dot"></span>
+                                <span class="sev-label">CRIT</span>
+                                <span class="sev-count" id="sev-critical">0</span>
+                            </div>
+                            <div class="sev-item high">
+                                <span class="sev-dot"></span>
+                                <span class="sev-label">HIGH</span>
+                                <span class="sev-count" id="sev-high">0</span>
+                            </div>
+                            <div class="sev-item medium">
+                                <span class="sev-dot"></span>
+                                <span class="sev-label">MED</span>
+                                <span class="sev-count" id="sev-medium">0</span>
+                            </div>
+                        </div>
+                        <span class="kpi-label">Severity Breakdown</span>
                     </div>
                 </div>
 
-                <div class="threat-log-container">
-                    <div class="panel-header">
-                        <h2>Active Threat Feed</h2>
-                        <p class="subtitle">Node Isolation Protocols</p>
+                <!-- 3D Visualization Panel -->
+                <div class="viz-panel">
+                    <div class="panel-chrome">
+                        <div class="panel-chrome__dots">
+                            <span></span><span></span><span></span>
+                        </div>
+                        <span class="panel-chrome__title">TRAFFIC TOPOLOGY — 3D ISOLATION FOREST FEATURE SPACE</span>
+                        <div class="panel-chrome__badge">LIVE</div>
+                    </div>
+                    <div id="mesh-plot" class="plot-area">
+                        <div class="loading-state" id="loading-state">
+                            <div class="loading-spinner"></div>
+                            <span>Initializing Neural Scan…</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column: Threat Feed -->
+            <div class="col-right">
+                <div class="feed-panel">
+                    <div class="panel-chrome">
+                        <div class="panel-chrome__dots">
+                            <span></span><span></span><span></span>
+                        </div>
+                        <span class="panel-chrome__title">ACTIVE THREAT FEED</span>
+                        <span class="feed-count" id="feed-count">0 events</span>
                     </div>
                     <div class="threat-feed" id="threat-feed">
-                        <!-- Threat logs will be injected here -->
+                        <div class="feed-empty" id="feed-empty">
+                            <svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" stroke-width="1" opacity="0.3">
+                                <path d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
+                            </svg>
+                            <span>Waiting for scan data…</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- How It Works -->
+                <div class="info-panel">
+                    <div class="panel-chrome">
+                        <div class="panel-chrome__dots">
+                            <span></span><span></span><span></span>
+                        </div>
+                        <span class="panel-chrome__title">HOW AEGIS-X WORKS</span>
+                    </div>
+                    <div class="info-steps">
+                        <div class="info-step">
+                            <div class="step-num">01</div>
+                            <div class="step-content">
+                                <strong>Simulate</strong>
+                                <p>Generates 510 encrypted IoT mesh traffic packets including 10 hidden zero-day attack vectors.</p>
+                            </div>
+                        </div>
+                        <div class="info-step">
+                            <div class="step-num">02</div>
+                            <div class="step-content">
+                                <strong>Detect</strong>
+                                <p>Isolation Forest ML model (200 estimators) scores each packet. Outliers are flagged as threats.</p>
+                            </div>
+                        </div>
+                        <div class="info-step">
+                            <div class="step-num">03</div>
+                            <div class="step-content">
+                                <strong>Classify & Heal</strong>
+                                <p>Threats get severity ratings. Virtual firewall rules are auto-generated to isolate compromised nodes.</p>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </main>
+
+        <!-- Footer -->
+        <footer class="app-footer">
+            <span>AEGIS-X v2.0 — Autonomous Neural Mesh Defense</span>
+            <span class="footer-sep">•</span>
+            <span>Isolation Forest · 200 Estimators · 2% Contamination</span>
+        </footer>
     </div>
-    
+
     <script src="{{ url_for('static', filename='js/app.js') }}"></script>
 </body>
 </html>
