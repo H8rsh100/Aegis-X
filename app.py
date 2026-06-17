@@ -13,6 +13,11 @@ def api_data():
     data = engine.get_api_data()
     return jsonify(data)
 
+@app.route('/api/health')
+def api_health():
+    health = engine.get_system_health()
+    return jsonify(health)
+
 if __name__ == '__main__':
     # Run the Flask app on port 5050 to avoid conflicts
     app.run(debug=True, host='0.0.0.0', port=5050)
