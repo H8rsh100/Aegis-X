@@ -38,14 +38,16 @@ document.addEventListener('DOMContentLoaded', () => {
                 zerolinecolor: 'rgba(255,255,255,0.06)'
             },
             bgcolor: 'rgba(0,0,0,0)',
+            aspectmode: 'cube',
             camera: {
-                eye: { x: 1.5, y: 1.5, z: 1.2 },
-                center: { x: 0, y: 0, z: -0.15 }
+                eye: { x: 1.6, y: 1.6, z: 0.9 },
+                center: { x: 0, y: 0, z: 0 },
+                up: { x: 0, y: 0, z: 1 }
             }
         },
         paper_bgcolor: 'rgba(0,0,0,0)',
         plot_bgcolor: 'rgba(0,0,0,0)',
-        margin: { l: 10, r: 10, b: 10, t: 10 },
+        margin: { l: 0, r: 0, b: 0, t: 0 },
         showlegend: true,
         legend: {
             font: { color: '#7a8ba8', size: 10 },
