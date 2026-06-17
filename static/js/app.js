@@ -37,11 +37,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 color: '#7a8ba8', gridcolor: 'rgba(255,255,255,0.04)',
                 zerolinecolor: 'rgba(255,255,255,0.06)'
             },
-            bgcolor: 'rgba(0,0,0,0)'
+            bgcolor: 'rgba(0,0,0,0)',
+            camera: {
+                eye: { x: 1.5, y: 1.5, z: 1.2 },
+                center: { x: 0, y: 0, z: -0.15 }
+            }
         },
         paper_bgcolor: 'rgba(0,0,0,0)',
         plot_bgcolor: 'rgba(0,0,0,0)',
-        margin: { l: 0, r: 0, b: 0, t: 0 },
+        margin: { l: 10, r: 10, b: 10, t: 10 },
         showlegend: true,
         legend: {
             font: { color: '#7a8ba8', size: 10 },
