@@ -94,38 +94,64 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     const updateThreatFeed = (threats) => {
-        // Prepend new threats
+        // Clear existing feed to prevent duplicate stacking
+        threatFeed.innerHTML = '';
+
+        // Severity color map
+        const severityColors = {
+            'CRITICAL': '#ff1744',
+            'HIGH': '#ff9100',
+            'MEDIUM': '#ffd600'
+        };
+
         threats.forEach(threat => {
             const el = document.createElement('div');
             el.className = 'threat-item';
+            const sevColor = severityColors[threat.severity] || '#ff3366';
             el.innerHTML = `
                 <div class="threat-meta">
                     <span>${threat.timestamp}</span>
-                    <span>ENTROPY_DEV: ${threat.entropy.toFixed(2)}</span>
+                    <span class="severity-badge" style="background:${sevColor}20; color:${sevColor}; border:1px solid ${sevColor}50;">${threat.severity}</span>
                 </div>
                 <div class="threat-title">Node Isolation Protocol Activated</div>
                 <div class="threat-details">
-                    LAT: ${threat.latency.toFixed(2)}ms | PKT: ${threat.packet_size.toFixed(2)}B
+                    ENTROPY: ${threat.entropy.toFixed(2)} | LAT: ${threat.latency.toFixed(2)}ms | PKT: ${threat.packet_size.toFixed(2)}B
                 </div>
                 <div class="firewall-rule">
                     > ${threat.action} FROM ${threat.signature}
                 </div>
             `;
-            threatFeed.insertBefore(el, threatFeed.firstChild);
+            threatFeed.appendChild(el);
         });
+    };
 
-        // Limit feed items
-        while (threatFeed.children.length > 50) {
-            threatFeed.removeChild(threatFeed.lastChild);
+    // Fetch and display system health (uptime, scan count)
+    const fetchHealth = async () => {
+        try {
+            const res = await fetch('/api/health');
+            const health = await res.json();
+            const uptimeEl = document.getElementById('system-uptime');
+            const scansEl = document.getElementById('scan-count');
+            if (uptimeEl) uptimeEl.innerText = health.uptime;
+            if (scansEl) scansEl.innerText = health.total_scans;
+        } catch (e) {
+            console.error('Health fetch failed:', e);
         }
     };
 
     // Initial Load
     fetchScanData();
+    fetchHealth();
 
     // Event Listeners
-    refreshBtn.addEventListener('click', fetchScanData);
+    refreshBtn.addEventListener('click', () => {
+        fetchScanData();
+        fetchHealth();
+    });
     
     // Auto refresh every 10 seconds to simulate live feed
-    setInterval(fetchScanData, 10000);
+    setInterval(() => {
+        fetchScanData();
+        fetchHealth();
+    }, 10000);
 });
