@@ -137,7 +137,3 @@ Aegis-X/
 - **Visualization**: Plotly.js (browser), Matplotlib (CLI)
 - **Backend**: Flask (Python)
 - **Frontend**: Vanilla JS, CSS3 with glassmorphism effects
-
-## 📜 License
-
-This project is open source and available under the [MIT License](LICENSE).
