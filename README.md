@@ -9,15 +9,16 @@
   <img src="https://img.shields.io/badge/ML-Isolation%20Forest-orange?style=for-the-badge&logo=scikit-learn" alt="ML">
   <img src="https://img.shields.io/badge/Framework-Flask-lightgrey?style=for-the-badge&logo=flask" alt="Flask">
   <img src="https://img.shields.io/badge/Viz-Plotly%203D-blueviolet?style=for-the-badge&logo=plotly" alt="Plotly">
+  <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="License: MIT"></a>
 </p>
 
 ---
 
 ## 🧠 What is Aegis-X?
 
-**Aegis-X** is an autonomous cybersecurity engine designed to detect zero-day attacks in encrypted IoT mesh networks using unsupervised machine learning. It analyzes traffic patterns across three critical dimensions — **latency**, **packet size**, and **entropy** — to identify anomalous behavior indicative of data exfiltration, DDoS attacks, or protocol-level exploits.
+**Aegis-X** is an autonomous cybersecurity engine designed to detect zero-day attacks in encrypted IoT mesh networks using unsupervised machine learning. It analyzes traffic patterns across three critical dimensions - **latency**, **packet size**, and **entropy** - to identify anomalous behavior indicative of data exfiltration, DDoS attacks, or protocol-level exploits.
 
-When a threat is detected, Aegis-X automatically initiates **Node Isolation Protocols** and generates virtual firewall rules — simulating a self-healing network defense system.
+When a threat is detected, Aegis-X automatically initiates **Node Isolation Protocols** and generates virtual firewall rules - simulating a self-healing network defense system.
 
 ## ✨ Key Features
 
@@ -52,7 +53,7 @@ When a threat is detected, Aegis-X automatically initiates **Node Isolation Prot
 └──────────────────────┬──────────────────────┘
                        │ REST API
                        ▼
-┌─────────────────────────────────────────────┐
+ ┌─────────────────────────────────────────────┐
 │           Flask Web Server (app.py)          │
 │                                              │
 │  GET /           → Dashboard UI              │
@@ -61,7 +62,7 @@ When a threat is detected, Aegis-X automatically initiates **Node Isolation Prot
 └──────────────────────┬──────────────────────┘
                        │
                        ▼
-┌─────────────────────────────────────────────┐
+ ┌─────────────────────────────────────────────┐
 │        Interactive Web Dashboard             │
 │                                              │
 │  • 3D Plotly Traffic Topology               │
@@ -137,3 +138,9 @@ Aegis-X/
 - **Visualization**: Plotly.js (browser), Matplotlib (CLI)
 - **Backend**: Flask (Python)
 - **Frontend**: Vanilla JS, CSS3 with glassmorphism effects
+
+---
+
+## License
+
+MIT - see LICENSE.
